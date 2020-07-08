@@ -1,0 +1,45 @@
+﻿DATE: 6/26/20
+AUTHOR: Noah B
+
+'grabber' Manual 
+--------------------
+'path'			-	manages the destination directory path for the specified method purview.  Each purview must have a single destination						  directory in which the serializable data caches will be stored.  
+	'/r'		-	READ flag; returns the current destination directory path for the purview.
+	'/u'        -   UPDATE flag; changes the destination directory for a given purview.  Provide the new destination path as the second function			  parameter, after the purview is specified (see examples below).
+	EXAMPLES	
+					'path {/r} {Purview}'
+					'path {/r, /u} {Purview}, {newDestinationDirectoryPath}'
+--------------------			
+'cache'			-	manages the cache file(s) in the destination directory. by default, this command will return the list of purviews and 
+					their most current associated cache files.
+	'/w'		-	WRITE flag; creates a new cache file to overwrite the existing file. 
+	'/f'		-	FREEZE flag; when used with '/w' (order doesn't matter), the current cache file will not be overwritten by the new cache
+					file that is created.  Applications making use of the cache will read only the most recent cache file. 
+	'/c'		-	COPY flag; copies the current cache file to the specified destination directory (requires additional parameter to be 
+					provided). 
+	'/d'		-   DELETE flag; deletes only the most current cache file in the destination folder;
+
+	EXAMPLES 
+					'cache'	
+					'cache {/w /f} {methodPurview}'
+					'cache {/w /f /c} {methodPurview, directoryPathforCopiedFile}'
+					'cache {/d} {methodPurview}' 
+-------------------		
+'register'		-  register a new datafile with the External Cache Manager (ECM).  Provide Purview, filename and Serialization Object Model (SOM)
+				   type.  The SOM type must be contained in a SOM class definition accessible to the grabber, and must match exactly the case 
+				   and spelling of the class.
+
+	EXAMPLES
+				'register {Purview}, {fileName}, {SOMClassType}'
+-------------------			
+'rename'		-  rename an existing data file.  Provide the name of the targetfile, then the new name that will be used for the file. 
+
+	EXAMPLES	
+				'rename {oldFileName}, {newFileName}'
+-------------------	
+'restore'		-  restores to default folder and file configuration.  since this will erase/overwrite existing data, a warning message 
+				   will be displayed and additional user input will be required before running the restoration process. 
+	'/o'		-  OVERRIDE the default directory used as the root directory for cache folders; provide the valid directory path where 
+				   the new cache root directory will be located. 
+	
+
