@@ -7,7 +7,7 @@ using Jumble.ExternalCacheManager.Model;
 
 namespace Jumble.ExternalCacheManager.Services
 {
-    public class BinarySerializingService<T> where T : CacheObject 
+    public class BinarySerializingService<T> 
     {
         public bool SerializeObject(T dataObject, string fileName)
         {
@@ -49,35 +49,5 @@ namespace Jumble.ExternalCacheManager.Services
                 throw new Exception("Failed to deserialize data object(s) from " + fileName.ToString());
             }
         }
-
-
-        public bool SerializeList(List<T> objectList, string fileName)
-        {
-            bool serializationResult = true;
-
-            try
-            {
-
-
-
-
-
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message.ToString());
-                return false;
-            }
-
-
-
-
-            return serializationResult;
-        }
-
-
-
-
     }
 }

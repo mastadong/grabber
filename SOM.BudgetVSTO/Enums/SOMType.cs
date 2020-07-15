@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace grabber.Enums
+namespace SOM.BudgetVSTO.Enums
 {
     public enum SOMType
     {
-        HoursEntry
+        HoursEntry,
+        SystemEntry
     }
 }

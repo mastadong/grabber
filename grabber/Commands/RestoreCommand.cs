@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Jumble.ExternalCacheManager.Managers;
+using NuGet;
 
 namespace grabber.Commands
 {
@@ -15,6 +17,7 @@ namespace grabber.Commands
         private string _fileMapPath { get; set; }
         private string _purviewMapPath { get; set; }
         private string _configFilePath { get; set; }
+        private string _connStrFilePath { get; set; }
         private List<PurviewEntry> PurviewList { get; set; }
         private List<DataFile> DataFileList { get; set; }
         public RestoreCommand()
@@ -34,11 +37,11 @@ namespace grabber.Commands
                 folder.Create();
 
                 //Reset the ECM files.
-                ResetECMFiles();
+                RestoreECMFiles();
                 //Create destination folders in the specified location and serialize data to the ECM file.
                 SetDefaultFolders();
                 //Create the default datafiles and register them with the ECM file.
-                SetDefaultFiles();
+                CreateEmptyDefaultFiles();
                 //Write the changes to the new ECM files
                 WriteToFile();
 
@@ -61,18 +64,18 @@ namespace grabber.Commands
                 //Create subdirectory objects
                 PurviewEntry siloPurview = new PurviewEntry()
                 {
-                    ParentPurview = Purview.Silo, 
-                    DestinationDirectory = _defaultDirectoryPath + @"silo"
+                    ParentPurview = Purview.Silo,
+                    DestinationDirectory = _defaultDirectoryPath + Purview.Silo.ToString()
                 };
-                PurviewEntry airePurview = new PurviewEntry() 
-                { 
-                    ParentPurview = Purview.Aire, 
-                    DestinationDirectory = _defaultDirectoryPath + @"aire" 
+                PurviewEntry airePurview = new PurviewEntry()
+                {
+                    ParentPurview = Purview.Aire,
+                    DestinationDirectory = _defaultDirectoryPath + Purview.Aire.ToString() 
                 };
                 PurviewEntry budgetVSTOPurview = new PurviewEntry()
                 { 
                     ParentPurview = Purview.Budget, 
-                    DestinationDirectory = _defaultDirectoryPath + @"budgetvsto"
+                    DestinationDirectory = _defaultDirectoryPath + Purview.Budget.ToString()
                 };
 
 
@@ -89,25 +92,25 @@ namespace grabber.Commands
                 }
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                Console.WriteLine("Error creating default folders: " + e.Message.ToString());
             }
         }
        
         /// <summary>
         /// Generates the default cache files.
         /// </summary>
-        private void SetDefaultFiles()
+        private void CreateEmptyDefaultFiles()
         {
             try
             {
                 //Create data file objects.
-                string budgetPurviewDirectory = @"budgetvsto\";
+                string budgetPurviewDirectory = Purview.Budget.ToString() + @"\";
 
-                DataFile ProjectedHours = new DataFile(Purview.Budget, _defaultDirectoryPath + budgetPurviewDirectory + "projectedhours.xml", "HoursEntry");
-                DataFile ActualHours = new DataFile(Purview.Budget, _defaultDirectoryPath + budgetPurviewDirectory + "actualhours.xml", "HoursEntry");
-                DataFile BudgetedHours = new DataFile(Purview.Budget, _defaultDirectoryPath + budgetPurviewDirectory + "budgetedhours.xml", "HoursEntry");
+                DataFile ProjectedHours = new DataFile(Purview.Budget, _defaultDirectoryPath + budgetPurviewDirectory + "projectedhours.dat", "HoursEntry");
+                DataFile ActualHours = new DataFile(Purview.Budget, _defaultDirectoryPath + budgetPurviewDirectory + "actualhours.dat", "HoursEntry");
+                DataFile BudgetedHours = new DataFile(Purview.Budget, _defaultDirectoryPath + budgetPurviewDirectory + "budgetedhours.dat", "HoursEntry");
 
                 //Add the datafile objects to the list.
                 DataFileList.Add(ProjectedHours);
@@ -118,8 +121,9 @@ namespace grabber.Commands
                 foreach(DataFile f in DataFileList)
                 {
                     FileInfo file = new FileInfo(f.FullFilePath);
-                    using (FileStream fs = file.Create()) ;
+                    using (FileStream fs = file.Create());
                 }
+
             }
             catch (Exception)
             {
@@ -131,7 +135,7 @@ namespace grabber.Commands
         /// <summary>
         /// Resets the default ECM files 'filemap' and 'purviewmap' in the default cache directory.
         /// </summary>
-        private void ResetECMFiles()
+        private void RestoreECMFiles()
         {
             try
             {
@@ -139,15 +143,49 @@ namespace grabber.Commands
                 //Create the files if they don't exist already; if they do exist, they will be overwritten with new, blank files.
                 FileInfo fileMap = new FileInfo(_defaultDirectoryPath + "filemap.xml");
                 FileInfo purviewMap = new FileInfo(_defaultDirectoryPath + "purviewmap.xml");
-                FileInfo configFile = new FileInfo(_defaultDirectoryPath + "config.dat"); ;
+                FileInfo configFile = new FileInfo(_defaultDirectoryPath + "config.dat"); 
+                FileInfo connStringFile = new FileInfo(_defaultDirectoryPath + "connectionstr.xml");
+                CacheMap cache = CacheMap.Safe();
+                FileInfo applicationLocalCacheRootFile = new FileInfo(cache.ApplicationCacheRootDirectoryFileName); 
 
                 using (FileStream fs = fileMap.Create()) { };
                 using (FileStream fs = purviewMap.Create()) { };
                 using (FileStream fs = configFile.Create()) { };
-                
+                using (FileStream fs = connStringFile.Create()) { };
+                using (FileStream fs = applicationLocalCacheRootFile.Create()) { };
+
                 _fileMapPath = fileMap.FullName;
                 _purviewMapPath = purviewMap.FullName;
                 _configFilePath = configFile.FullName;
+                _connStrFilePath = connStringFile.FullName;
+
+                //Encode and serialize the default connection strings.
+                CryptoService cryptoService = new CryptoService();
+                string defaultJumbleConnectionString = @"Data Source=ADEAI-ALT\TRIMBLE;Initial Catalog=Jumble_dev;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+
+                string estimatingDatabaseString = @"Data Source=ADEAI-ALT\TRIMBLE;Initial Catalog=BudgetVSTO;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+
+                string spectrumDatabaseString = @"Data Source=SPECTRUM;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+
+                string encodedJumbleConnectionString = cryptoService.Encrypt(defaultJumbleConnectionString);
+                string encodedEstimatingConnectionString = cryptoService.Encrypt(estimatingDatabaseString);
+                string encodedSpectrumConnectionString = cryptoService.Encrypt(spectrumDatabaseString);
+
+
+                //Create the data objects to serialize.
+                List<KeyPairEntry> connectionStrings = new List<KeyPairEntry>();
+                KeyPairEntry jumbleString = new KeyPairEntry() { key = TargetDatabase.Jumble.ToString(), value = encodedJumbleConnectionString };
+                KeyPairEntry estimatingString = new KeyPairEntry() { key = TargetDatabase.Estimating.ToString(), value = encodedEstimatingConnectionString };
+                KeyPairEntry spectrumString = new KeyPairEntry() { key = TargetDatabase.Spectrum.ToString(), value = encodedSpectrumConnectionString };
+               
+                //Add the strings to the list.
+                connectionStrings.Add(jumbleString);
+                connectionStrings.Add(estimatingString);
+                connectionStrings.Add(spectrumString);
+
+                //Serialize the list to the connection string file.
+                XMLSerializingService<List<KeyPairEntry>> xmlSerializingService = new XMLSerializingService<List<KeyPairEntry>>();
+                xmlSerializingService.SerializeObject(connectionStrings, _connStrFilePath);
 
             }
             catch (Exception)
@@ -169,7 +207,10 @@ namespace grabber.Commands
                 KeyPairEntry keyPair = new KeyPairEntry() { key = "DefaultDirectoryPath", value = _defaultDirectoryPath };
                 BinarySerializingService<KeyPairEntry> binarySerializingService = new BinarySerializingService<KeyPairEntry>();
                 binarySerializingService.SerializeObject(keyPair, _configFilePath);
-                binarySerializingService.SerializeObject(keyPair, "cacherootdirectory.dat");
+
+                CacheMap cache = CacheMap.Safe();
+                //binarySerializingService.SerializeObject(keyPair, "cacherootdirectory.dat");
+                binarySerializingService.SerializeObject(keyPair, cache.ApplicationCacheRootDirectoryFileName);
                 //TODO: This path must be recorded in the database whenever it is changed.  The database record provides a public location 
                 //for other applications to stay up to date on the cache folder address.
 

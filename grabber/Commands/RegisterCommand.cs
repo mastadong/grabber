@@ -1,5 +1,4 @@
-﻿using grabber.Enums;
-using Jumble.ExternalCacheManager.Enums;
+﻿using Jumble.ExternalCacheManager.Enums;
 using Jumble.ExternalCacheManager.Managers;
 using Jumble.ExternalCacheManager.Model;
 using Jumble.ExternalCacheManager.Services;
@@ -43,7 +42,7 @@ namespace grabber.Commands
 
                 //5.  Create the file
                 FileInfo file = new FileInfo(fullFilePath);
-                using (FileStream fs = file.Create()) ;
+                using (FileStream fs = file.Create());
 
                 //6.  If the new file was created successfully, serialize the udpated datafile list to save the changes.
                 XMLSerializingService<List<DataFile>> xmlSerializingService = new XMLSerializingService<List<DataFile>>();

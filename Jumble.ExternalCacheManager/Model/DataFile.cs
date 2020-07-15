@@ -9,11 +9,12 @@ namespace Jumble.ExternalCacheManager.Model
     [Serializable]
     public class DataFile : CacheObject
     {
+       //TODO: Additional parameter is needed to identify the purpose of the datafile.  This is used in combination with 
+       //other properties to uniquely identify the file regardless of filename. 
         public string SOMType { get; set; }
         public string DirectoryPath { get; set; }
         public string FileName { get; set; }
         private string _fullFilePath;
-
         public string FullFilePath
         {
             get { return _fullFilePath; }

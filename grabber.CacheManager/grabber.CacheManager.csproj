@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Jumble.ExternalCacheManager\Jumble.ExternalCacheManager.csproj" />
+    <ProjectReference Include="..\SOM.BudgetVSTO\SOM.BudgetVSTO.csproj" />
+    <ProjectReference Include="..\SQLManager.Core\SQLManager.Core.csproj" />
+  </ItemGroup>
+
+</Project>

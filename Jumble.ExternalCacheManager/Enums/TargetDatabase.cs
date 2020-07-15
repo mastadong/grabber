@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace grabber.Enums
+namespace Jumble.ExternalCacheManager.Enums
 {
     public enum TargetDatabase
     {
         Spectrum,
         Estimating,
         Aire,
-        Silo
+        Silo,
+        Jumble
     }
 }

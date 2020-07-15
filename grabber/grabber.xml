@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>grabber</name>
+    </assembly>
+    <members>
+        <member name="M:grabber.Commands.PathCommand.DisplayDirectoryStructure">
+            <summary>
+            Prints the directory structure for the cache root directory configuration.
+            </summary>
+        </member>
+        <member name="M:grabber.Commands.PathCommand.ChangeCacheRootDirectory(System.String)">
+            <summary>
+            Updates the cache root directory, copies all existing files to the new location, then deletes all files and folders in the 
+            old root directory.
+            </summary>
+            <param name="newCacheRootDirectory"></param>
+            <returns></returns>
+        </member>
+        <member name="M:grabber.Commands.PathCommand.ViewRootCacheDirectory">
+            <summary>
+            Displays the contents of the local application file 'cacherootdirectory.dat' which is necessary for the ECM to properly
+            load the CacheMap.
+            </summary>
+        </member>
+        <member name="M:grabber.Commands.RestoreCommand.SetDefaultFolders">
+            <summary>
+            Create and assign default purview folders
+            </summary>
+        </member>
+        <member name="M:grabber.Commands.RestoreCommand.CreateEmptyDefaultFiles">
+            <summary>
+            Generates the default cache files.
+            </summary>
+        </member>
+        <member name="M:grabber.Commands.RestoreCommand.RestoreECMFiles">
+            <summary>
+            Resets the default ECM files 'filemap' and 'purviewmap' in the default cache directory.
+            </summary>
+        </member>
+        <member name="M:grabber.Commands.RestoreCommand.WriteToFile">
+            <summary>
+            Serializes the in-memory file and purview lists to the ECM files 'filemap' and 'purviewmap'.
+            </summary>
+        </member>
+        <member name="M:grabber.Program.AssignUserFunction(System.String[])">
+            <summary>
+            Reads first argument provided by user and interprets it; if it is valid function, the function will be called.  Otherwise, 
+            an error message will be returned to the user.
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="M:grabber.Program.RunCacheCommand(System.Collections.Generic.List{System.String})">
+            <summary>
+            Runs the cache function using the provided raised flags.
+            </summary>
+            <param name="raisedFlags"></param>
+        </member>
+        <member name="M:grabber.Program.RunPathCommand(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String})">
+            <summary>
+            Runs the path command with provided flags.
+            </summary>
+        </member>
+        <member name="M:grabber.Program.RunRegisterCommand(System.Collections.Generic.List{System.String})">
+            <summary>
+            Register a new file name with the ECM. 
+            </summary>
+        </member>
+        <member name="M:grabber.Program.RunRenameCommand(System.Collections.Generic.List{System.String})">
+            <summary>
+            Rename an existing file.
+            </summary>
+        </member>
+        <member name="M:grabber.Program.RunRestoreCommand(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String})">
+            <summary>
+            Restores all file and purview information to the original default settings; all 'rename' events will be deleted, so only
+            applications that name-map to the original file names will continue to function.  All other applications must be reset to 
+            search for the default file names used by the ECM.
+            </summary>
+        </member>
+        <member name="M:grabber.Program.DisplaySystemInformation">
+            <summary>
+            Displays system information about 'grabber'
+            </summary>
+        </member>
+        <member name="T:grabber.Updater">
+            <summary>
+            Updater provides services for checking and installing application updates.
+            </summary>
+        </member>
+        <member name="M:grabber.Updater.CheckForUpdates">
+            <summary>
+            Checks for application updates in the specified update location.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:grabber.Updater.GetCurrentVersionNumber">
+            <summary>
+            Returns the current version number.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

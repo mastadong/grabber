@@ -12,6 +12,7 @@ AUTHOR: Noah B
 --------------------			
 'cache'			-	manages the cache file(s) in the destination directory. by default, this command will return the list of purviews and 
 					their most current associated cache files.
+    '/r'        -   REFRESH flag; refresh the entire data cache.
 	'/w'		-	WRITE flag; creates a new cache file to overwrite the existing file. 
 	'/f'		-	FREEZE flag; when used with '/w' (order doesn't matter), the current cache file will not be overwritten by the new cache
 					file that is created.  Applications making use of the cache will read only the most recent cache file. 
@@ -28,6 +29,8 @@ AUTHOR: Noah B
 'register'		-  register a new datafile with the External Cache Manager (ECM).  Provide Purview, filename and Serialization Object Model (SOM)
 				   type.  The SOM type must be contained in a SOM class definition accessible to the grabber, and must match exactly the case 
 				   and spelling of the class.
+	'/q'		-  Set the database query object for a specified cache file.  This command receives multiple parameters, specifies whether a  
+				   query/nonquery/storedprocedure is used, and verifies that the target file is indeed capable of receiving the data output. 
 
 	EXAMPLES
 				'register {Purview}, {fileName}, {SOMClassType}'

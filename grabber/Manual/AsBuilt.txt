@@ -1,0 +1,44 @@
+﻿DATE: 6/26/20
+AUTHOR: Noah B
+
+'grabber' Manual 
+--------------------
+'path' - Handles and displays information about the cache root directory path. 		
+--------------------    
+	
+	'/r' - READ flag; returns a list of the directory structure.
+	'/u' - UPDATE flag; changes the cache root directory. 
+	'/c' - CONFIG file; view the contents of 'cacherootdirectory.dat', which 
+	       is stored in the local application folder and is used for the ECM 
+		   to load the CacheMap correctly.
+
+
+-------------------		
+'cache' - manages the cache file(s) in the destination directory. 
+-------------------
+
+    '/r'        -   REFRESH flag; refresh the entire data cache.
+
+
+-------------------		
+'info' - display information about 'grabber'
+-------------------		
+'init' - initialize the application.  Must be completed before using the grabber.
+-------------------		
+'register' - register a new datafile with the External Cache Manager (ECM).  
+             Provide Purview, filename and Serialization Object Model (SOM)
+	         type.  The SOM type must be contained in a SOM class definition 
+			 accessible to the grabber, and must match exactly the case and
+			 spelling of the class.
+-------------------			
+'rename' - rename an existing data file.  Provide the name of the targetfile, 
+           then the new name that will be used for the file. 
+-------------------	
+'restore' - restores to default folder and file configuration.
+-------------------	
+
+	'/o'		-  OVERRIDE the default directory used as the root directory 
+	               for cache folders; provide
+				   the valid directory path where the new cache root directory will be located. 
+	
+
