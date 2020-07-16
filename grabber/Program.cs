@@ -18,7 +18,6 @@ namespace grabber
 {
     class Program
     {
-        
         static void Main(string[] args)
         {
             //Detect user-specified function.
