@@ -6,7 +6,7 @@
     <Authors>BadMonkey</Authors>
     <StartupObject>grabber.Program</StartupObject>
     <ApplicationIcon>briefcase.ico</ApplicationIcon>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>NoahsKeyFile.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Description>NuGet package from VS2019
@@ -22,7 +22,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Manual\AsBuilt.txt" />
     <None Remove="SQLManager.dll" />
   </ItemGroup>
 

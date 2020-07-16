@@ -46,7 +46,7 @@ namespace grabber.CacheManager
             if(BackupSuccessful == true)
             {
                 Console.WriteLine("Backup was successful. " + DateTime.Now);
-                Console.WriteLine(elapsedTime.ToString());
+                Console.WriteLine("Total elapsed time: " + elapsedTime.ToString());
                 //TODO: Record the backup event in the backup event header table.
             }
             else

@@ -1,5 +1,4 @@
-﻿using Squirrel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -19,21 +18,21 @@ namespace grabber
         /// <returns></returns>
         public async Task CheckForUpdates()
         {
+            ////string updateLocation = @"\\sbs\Users\Noahb\grabber\Releases";
             //string updateLocation = @"\\sbs\Users\Noahb\grabber\Releases";
-            string updateLocation = @"\\sbs\Users\Noahb\grabber\Releases";
-            if (Directory.Exists(updateLocation))
-            {
-                using (var manager = new UpdateManager(updateLocation))
-                {
-                    await manager.UpdateApp();
-                    //await manager.CheckForUpdate();
-                }
+            //if (Directory.Exists(updateLocation))
+            //{
+            //    using (var manager = new UpdateManager(updateLocation))
+            //    {
+            //        await manager.UpdateApp();
+            //        //await manager.CheckForUpdate();
+            //    }
 
-            }
-            else
-            {
-                Console.WriteLine("Update location: " + updateLocation + " not found.  The application will continue to run, but updates will no longer be available until the missing location is resolved.");
-            }
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Update location: " + updateLocation + " not found.  The application will continue to run, but updates will no longer be available until the missing location is resolved.");
+            //}
         }
 
         /// <summary>

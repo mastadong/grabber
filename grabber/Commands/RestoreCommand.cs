@@ -7,7 +7,6 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Jumble.ExternalCacheManager.Managers;
-using NuGet;
 
 namespace grabber.Commands
 {
@@ -228,6 +227,80 @@ namespace grabber.Commands
 
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Regenerates the 
+        /// </summary>
+        /// <param name="defaultDirectoryName"></param>
+        public void RestoreCacheRootDirectoryFile(string defaultDirectoryName, string targetDirectory=null)
+        {
+            bool DirectoryExists = true;
+
+            if(!Directory.Exists(defaultDirectoryName))
+            {
+                try
+                {
+                    Directory.CreateDirectory(defaultDirectoryName);
+
+                }
+                catch
+                {
+                    DirectoryExists = false;
+                    Console.WriteLine("Unable to create the directory: " + defaultDirectoryName);
+                    Console.WriteLine("Process was cancelled. ");
+                }
+            }
+
+            if(DirectoryExists == true)
+            {
+                if(!string.IsNullOrEmpty(targetDirectory))
+                {
+                    if(Directory.Exists(targetDirectory) == true)
+                    {
+                        CacheMap cache = CacheMap.Safe();
+                        //Create the target file path.
+                        string targetFilePath = Path.Combine(targetDirectory + cache.ApplicationCacheRootDirectoryFileName);
+                        //Create the file instance in the target folder.
+                        try
+                        {
+                            FileInfo applicationLocalCacheRootFile = new FileInfo(targetFilePath);
+                            using (FileStream fs = applicationLocalCacheRootFile.Create()) { };
+                            //Write the data to file. 
+                            KeyPairEntry keyPair = new KeyPairEntry() { key = "DefaultDirectoryPath", value = defaultDirectoryName };
+                            BinarySerializingService<KeyPairEntry> binarySerializingService = new BinarySerializingService<KeyPairEntry>();
+                            binarySerializingService.SerializeObject(keyPair, targetFilePath);
+                           
+                            Console.WriteLine("The file was successfully created at: " + targetFilePath);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine("Error trying to create file '" + targetFilePath + "': " + e.Message.ToString());
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("The directory " + targetDirectory + " cannot be found and cannot be created at this time.\nOperation has been cancelled.");
+                    }
+                }
+                else if (string.IsNullOrEmpty(targetDirectory))
+                { 
+                    //Create the file instance in the local application folder.
+                    CacheMap cache = CacheMap.Safe();
+                    FileInfo applicationLocalCacheRootFile = new FileInfo(cache.ApplicationCacheRootDirectoryFileName);
+                    using (FileStream fs = applicationLocalCacheRootFile.Create()) { };
+
+                    //Write the data to file. 
+                    KeyPairEntry keyPair = new KeyPairEntry() { key = "DefaultDirectoryPath", value = defaultDirectoryName };
+                    BinarySerializingService<KeyPairEntry> binarySerializingService = new BinarySerializingService<KeyPairEntry>();
+                    binarySerializingService.SerializeObject(keyPair, cache.ApplicationCacheRootDirectoryFileName);
+                    
+                    Console.WriteLine("The file was successfully created.");
+                }
+                
+               
+            }
+
         }
 
     }

@@ -34,11 +34,17 @@ AUTHOR: Noah B
 'rename' - rename an existing data file.  Provide the name of the targetfile, 
            then the new name that will be used for the file. 
 -------------------	
-'restore' - restores to default folder and file configuration.
+'restore' - restores system configurations and important files.
 -------------------	
 
 	'/o'		-  OVERRIDE the default directory used as the root directory 
-	               for cache folders; provide
-				   the valid directory path where the new cache root directory will be located. 
+	               for cache folders; provide the valid directory path where 
+			       the new cache root directory will be located. 
+	'/d'        -  DAT file only; regenerates the "cacherootdirectory.dat" file 
+	               in the local application folder.  Does not affect any other
+				   files or folders.  Provide the name of the CacheRootDirectory
+				   and (optional) the target directory where the file will be
+				   regenerated.  By default, the file will be generated in 
+				   grabber's application folder.
 	
 

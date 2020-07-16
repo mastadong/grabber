@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices.ComTypes;
 using grabber.Commands;
-using Squirrel;
 using grabber.CacheManager;
 
 namespace grabber
@@ -98,15 +97,7 @@ namespace grabber
                         RunRenameCommand(userArguments);
                         break;
                     case "restore":
-                        Console.WriteLine("All current information will be erased.  Folders and files will be restored to the default starting condition.\nThis is a non-reversible operation.");
-                        Console.WriteLine("Continue? (Y or N): ");
-                        string response = Console.ReadLine();
-                        if(response.ToUpper() == "Y")
-                        {
-                            RunRestoreCommand(raisedFlags, userArguments);
-                        }
-                        else
-                        { break;}
+                        RunRestoreCommand(raisedFlags, userArguments);
                         break;
                     case "echo":
                         Console.WriteLine("User called the '" + _userFunction + "' function with the following flags: ");
@@ -146,7 +137,6 @@ namespace grabber
                 return Convert.ToString(args[0]);
             }
         }
-
 
         /// <summary>
         /// Runs the cache function using the provided raised flags.
@@ -309,10 +299,21 @@ namespace grabber
         {
             if (raisedFlags.Count == 0)
             {
-                RestoreCommand restoreCommand = new RestoreCommand();
-                restoreCommand.RestoreDefaults(@"\\sbs\Users\Noahb\EstimatingAddIn\cache\");
+                Console.WriteLine("All current information will be erased.  Folders and files will be restored to the default starting condition.\nThis is a non-reversible operation.");
+                Console.WriteLine("Continue? (Y or N): ");
+                string response = Console.ReadLine();
+                if (response.ToUpper() == "Y")
+                {
+                    RestoreCommand restoreCommand = new RestoreCommand();
+                    restoreCommand.RestoreDefaults(@"\\sbs\Users\Noahb\EstimatingAddIn\cache\");
+                }
+                else
+                {
+                    Console.WriteLine("The operation was cancelled.");
+                
+                }
             }
-            else if (raisedFlags[0] == "/o" && userArguments.Count != 0)
+            else if (raisedFlags[0] == "/o" && userArguments.Count > 0)
             {
                 if (!Directory.Exists(userArguments[0]))
                 {
@@ -335,6 +336,20 @@ namespace grabber
                     //The provided directory exists, so use it to run the restore command.
                     RestoreCommand restoreCommand = new RestoreCommand();
                     restoreCommand.RestoreDefaults(userArguments[0]);
+                }
+            }
+            else if (raisedFlags[0] == "/d" && userArguments.Count > 0)
+            {
+                RestoreCommand restoreCommand = new RestoreCommand();
+                if(userArguments.Count == 1)
+                {
+                    //User has not specified a target path for the file; it will be created in the local application folder.
+                    restoreCommand.RestoreCacheRootDirectoryFile(userArguments[0].ToString());
+                }
+                else
+                {
+                    //User has specified a target path for the new file.
+                    restoreCommand.RestoreCacheRootDirectoryFile(userArguments[0].ToString(), userArguments[1].ToString());
                 }
             }
             else
@@ -360,7 +375,6 @@ namespace grabber
             Console.WriteLine("'grabber' ");
             Console.WriteLine (updater.GetCurrentVersionNumber());
         }
-
 
         private static Purview GetPurviewType(string val)
         {
