@@ -16,7 +16,7 @@ namespace grabber.Commands
         /// </summary>
         public void DisplayDirectoryStructure()
         {
-            CacheMap cache = CacheMap.Load();
+            CacheMap cache = CacheMap.RawLoad();
             Console.WriteLine("    ");
             Console.WriteLine("CACHE ROOT DIRECTORY: " + cache._cacheRootDirectory.ToString());
             Console.WriteLine("    SUB DIRECTORIES: ");
@@ -46,7 +46,7 @@ namespace grabber.Commands
             try
             {
                 //copy all the existing folders and files to the new location. 
-                CacheMap cache = CacheMap.Load();
+                CacheMap cache = CacheMap.RawLoad();
                 string oldCacheRootDirectory = cache._cacheRootDirectory;
                 //copy the folders
                 foreach (PurviewEntry p in cache.PurviewMap.PurviewEntries)
@@ -98,6 +98,10 @@ namespace grabber.Commands
                 BinarySerializingService<KeyPairEntry> binarySerializingService = new BinarySerializingService<KeyPairEntry>();
                 binarySerializingService.SerializeObject(keyPair, newConfigFilePath);
                 binarySerializingService.SerializeObject(keyPair, cache.ApplicationCacheRootDirectoryFileName);
+
+                //Update the cacherootdirectory path stored in the database.
+                RestoreCommand restoreCommand = new RestoreCommand();
+                restoreCommand.RecordConfiguration(newCacheRootDirectory);
 
                 //Delete the contents of the previous cache root directory.
                 Directory.Delete(oldCacheRootDirectory, true);

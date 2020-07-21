@@ -14,7 +14,7 @@ namespace grabber.Commands
         public RegistrationResult Register(Purview purview, string fileName, string somType)
         {
             //1. Load the cache map into memory
-            CacheMap cacheMap = CacheMap.Load();
+            CacheMap cacheMap = CacheMap.RawLoad();
             if (cacheMap == null)
             {
                 return RegistrationResult.IncompleteLoad;

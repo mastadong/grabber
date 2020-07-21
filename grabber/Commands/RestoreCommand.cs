@@ -7,6 +7,7 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Jumble.ExternalCacheManager.Managers;
+using SQLManager.Core;
 
 namespace grabber.Commands
 {
@@ -39,10 +40,15 @@ namespace grabber.Commands
                 RestoreECMFiles();
                 //Create destination folders in the specified location and serialize data to the ECM file.
                 SetDefaultFolders();
+
                 //Create the default datafiles and register them with the ECM file.
                 CreateEmptyDefaultFiles();
+
                 //Write the changes to the new ECM files
                 WriteToFile();
+
+                //Record the new cacherootdirectory path in the database.
+                RecordConfiguration(_defaultDirectoryPath);
 
                 Console.WriteLine("The default configuration was successfully restored.  The root cache folder is now located at: \n" + _defaultDirectoryPath);
             }
@@ -186,6 +192,9 @@ namespace grabber.Commands
                 XMLSerializingService<List<KeyPairEntry>> xmlSerializingService = new XMLSerializingService<List<KeyPairEntry>>();
                 xmlSerializingService.SerializeObject(connectionStrings, _connStrFilePath);
 
+
+
+
             }
             catch (Exception)
             {
@@ -229,6 +238,40 @@ namespace grabber.Commands
             }
         }
 
+        /// <summary>
+        /// Records the directory configuration to the database;  Database storage of the path 
+        /// allows applications to locate the cache directories without requiring a copy of the 
+        /// "cacherootdirectory.dat" file, which is required by admin level callers.
+        /// </summary>
+        /// <param name="defaultDirectoryPath"></param>
+        public void RecordConfiguration(string defaultDirectoryPath)
+        {
+            try
+            {
+                //Enter the cacherootdirectory into the database.
+                ConnectionStringService connectionStringService = new ConnectionStringService();
+                SQLControl sql = new SQLControl(connectionStringService.Get(TargetDatabase.Jumble));
+                
+                //Delete the previous entry
+                sql.AddParam("@directoryName", "CacheRoot");
+                sql.ExecNonQuery("DELETE FROM ECM_CacheConfiguration WHERE DirectoryName = @directoryName");
+            
+                //Enter the new value
+                sql.AddParam("@directoryName", "CacheRoot");
+                sql.AddParam("@directoryPath", defaultDirectoryPath);
+                sql.ExecNonQuery("INSERT INTO ECM_CacheConfiguration (DirectoryName, DirectoryPath) VALUES (@directoryName, @directoryPath)");
+                if(sql.HasException())
+                {
+                    Console.WriteLine("SQL Exception: " + sql.Exception.ToString());
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error recording the root cache directory to the database: " + e.Message);
+                throw;
+            }
+
+        }
         /// <summary>
         /// Regenerates the 
         /// </summary>

@@ -42,7 +42,7 @@ namespace grabber.Commands
                 }
             }
 
-            CacheMap cache = CacheMap.Load();
+            CacheMap cache = CacheMap.RawLoad();
 
             //Find the old file and grab its full file path for use later on. 
             foreach(DataFile d in cache.DataFileMap.DataFiles)

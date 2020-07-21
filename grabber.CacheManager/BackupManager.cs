@@ -24,7 +24,7 @@ namespace grabber.CacheManager
         {
             //Budget VSTO Files
             //1. Identify the target cache files for the purview.
-            CacheMap cache = CacheMap.Load();
+            CacheMap cache = CacheMap.RawLoad();
             List<string> dataFileNames = CacheMap.GetDataFileNamesByPurview(cache, Purview.Budget);
 
             //FOR EACH INDIVIDUAL FILE:

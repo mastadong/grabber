@@ -7,6 +7,7 @@ namespace SOM.BudgetVSTO.Enums
     public enum SOMType
     {
         HoursEntry,
-        SystemEntry
+        SystemEntry,
+        Nothing
     }
 }

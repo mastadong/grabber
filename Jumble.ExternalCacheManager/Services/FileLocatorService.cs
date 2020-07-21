@@ -19,6 +19,7 @@ namespace Jumble.ExternalCacheManager.Services
         public string GetCacheFilePath(Purview purviewType, string fileName)
         {
             bool FileFound = false;
+            //Load the cacherootdirectory path from the database entry.
             CacheMap cache = CacheMap.Load();
             //The purviewDirectoryPath is the same for all files in a purview.  Take it from the 
             //first Datafile found in the list.

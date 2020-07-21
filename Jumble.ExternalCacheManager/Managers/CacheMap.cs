@@ -1,6 +1,7 @@
 ﻿using Jumble.ExternalCacheManager.Enums;
 using Jumble.ExternalCacheManager.Model;
 using Jumble.ExternalCacheManager.Services;
+using SQLManager.Core;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -19,11 +20,43 @@ namespace Jumble.ExternalCacheManager.Managers
         public DataFileMap DataFileMap { get; set; }
         public PurviewMap PurviewMap { get; set; }
         public string connStrFilePath { get; set; }
-        public static CacheMap Load()
+        
+        /// <summary>
+        /// Loads the cache root directory using the required file "cacherootdirectory.dat".  If 
+        /// the file is not located in the calling application's local folder, the cache map 
+        /// will not load properly.  If you want to load the CacheMap without this file, use 
+        /// the "CacheMap.Load()" method instead.  Only utilities and/or admin-level calls should
+        /// use "CacheMap.RawLoad()".
+        /// </summary>
+        /// <returns></returns>
+        public static CacheMap RawLoad()
         {
             CacheMap cacheMap = new CacheMap();
             cacheMap._cacheRootDirectory = GetCacheRootDirectory(cacheMap);
             if(cacheMap._cacheRootDirectory == null)
+            {
+                return null;
+            }
+            else
+            {
+                cacheMap.DataFileMap = new DataFileMap() { DataFiles = GetDataFiles(cacheMap._cacheRootDirectory) };
+                cacheMap.PurviewMap = new PurviewMap() { PurviewEntries = GetPurviewEntries(cacheMap._cacheRootDirectory) };
+                cacheMap.connStrFilePath = GetConnectionStringFilePath(cacheMap);
+                return cacheMap;
+            }
+        }
+
+        /// <summary>
+        /// Loads the cache root directory from the stored database record.  Does not require the 
+        /// file "cacherootdirectory.dat". 
+        /// </summary>
+        /// <returns></returns>
+        public static CacheMap Load()
+        {
+            CacheMap cacheMap = new CacheMap();
+            cacheMap._cacheRootDirectory = GetCacheRootDirectory(cacheMap);
+           
+            if (cacheMap._cacheRootDirectory == null)
             {
                 return null;
             }
@@ -46,6 +79,36 @@ namespace Jumble.ExternalCacheManager.Managers
             CacheMap cache = new CacheMap();
             return cache;
         }
+
+        /// <summary>
+        /// Returns the cacherootdirectory path stored in 'Jumble.ECM_CacheConfiguration'
+        /// </summary>
+        /// <returns></returns>
+        public static string GetCacheRootDirectory()
+        {
+            ConnectionStringService connectionStringService = new ConnectionStringService();
+            SQLControl sql = new SQLControl(connectionStringService.Get(TargetDatabase.Jumble));
+            sql.AddParam("@cacheRoot", "CacheRoot");
+            sql.ExecQuery("SELECT DirectoryPath FROM ECM_CacheConfiguration WHERE DirectoryName = @cacheRoot");
+            if(sql.HasException())
+            {
+                Console.WriteLine("Error while querying the database: " + sql.Exception.ToString());
+                return null;
+            }
+            else if (sql.DBDT.Rows.Count > 0)
+            {
+                return sql.DBDT.Rows[0].ItemArray[0].ToString();
+            }
+            else
+            {
+                Console.WriteLine("Query was successful, but no records were returned.");
+                return null;
+            }
+
+        }
+
+
+
         /// <summary>
         /// Returns the path of the cache root directory which is stored in the local application file.  The path is necessary for locating 
         /// the filemap and purviewmap files which are used to load the cache map.
@@ -167,7 +230,7 @@ namespace Jumble.ExternalCacheManager.Managers
         public static string GetDataFilePathByName(string fileName)
         {
             bool FileLocated = false;
-            CacheMap cache = CacheMap.Load();
+            CacheMap cache = CacheMap.RawLoad();
             foreach(DataFile d in cache.DataFileMap.DataFiles)
             {
                 if(d.FileName == fileName)

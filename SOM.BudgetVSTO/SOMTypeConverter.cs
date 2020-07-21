@@ -20,5 +20,34 @@ namespace SOM.BudgetVSTO
                     return null;
             }
         }
+
+        /// <summary>
+        /// Deconverts from string somType to enum SOMType
+        /// </summary>
+        /// <param name="somType"></param>
+        /// <returns></returns>
+        public static SOMType DeconvertStringToSomeType(string somType)
+        {
+            SOMType matchedCase;
+
+            if (Enum.TryParse(somType, out matchedCase))
+            {
+                switch (matchedCase)
+                {
+                    case SOMType.HoursEntry:
+                        return SOMType.HoursEntry;
+                    case SOMType.SystemEntry:
+                        return SOMType.SystemEntry;
+                    default:
+                        return SOMType.Nothing;
+                }
+            }
+            else
+            {
+                throw new Exception("Unable to deconvert SOMType: " + somType);
+
+            }
+
+        }
     }
 }

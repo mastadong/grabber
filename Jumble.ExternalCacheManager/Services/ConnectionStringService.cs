@@ -17,7 +17,7 @@ namespace Jumble.ExternalCacheManager.Services
         public string Get(TargetDatabase targetDatabase)
         {
             bool ConnectionStringLocated = false;
-            CacheMap cache = CacheMap.Load();
+            CacheMap cache = CacheMap.RawLoad();
             if (File.Exists(cache.connStrFilePath))
             { 
                 XMLSerializingService<List<KeyPairEntry>> xmlSerializingService = new XMLSerializingService<List<KeyPairEntry>>();
