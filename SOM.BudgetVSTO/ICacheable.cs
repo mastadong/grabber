@@ -13,14 +13,14 @@ namespace SOM.BudgetVSTO
     /// </summary>
     public interface ICacheable
     {
-        public string CacheFileName { get; }
+        string CacheFileName { get; }
         //Holds the query or stored procedure string literal.
-        public string DataRequest();
+        string DataRequest();
         //Identifies the base object type being serialized.
-        public SOMType SOMType { get; }
+        SOMType SOMType { get; }
         //References the ECM enum 'target database' to identify ... uh ... the target database.
-        public TargetDatabase TargetDatabase { get; }
+        TargetDatabase TargetDatabase { get; }
         //Returns an object of the base object type used for serialization.  Implements an internal 'SOMTypeToClass' converter.
-        public object GetType();
+        object GetType();
     }
 }

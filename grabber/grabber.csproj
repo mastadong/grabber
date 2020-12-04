@@ -21,9 +21,7 @@
     <DocumentationFile>C:\Users\noahb\source\repos\Spectrumizer\grabber\grabber.xml</DocumentationFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="SQLManager.dll" />
-  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
@@ -44,9 +42,7 @@
     <Resource Include="Manual\AsBuilt.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="SQLManager.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+   
   </ItemGroup>
 
   <ItemGroup>
